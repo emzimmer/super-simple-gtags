@@ -1,38 +1,45 @@
 document.addEventListener('DOMContentLoaded', function() {
-	let rowCount = document.querySelectorAll('.tag-row').length;
+	const tagsTable = document.getElementById('sstg-tags-table');
+	const addButton = document.getElementById('add-tag');
 
-	document.getElementById('add-tag').addEventListener('click', function() {
-		const newRow = `
-			<tr class="tag-row">
-				<td>
-					<select name="sstg_tags[${rowCount}][type]">
-						<option value="ga4">GA4</option>
-						<option value="ads">Google Ads</option>
-					</select>
-				</td>
-				<td>
-					<input type="text" 
-						name="sstg_tags[${rowCount}][id]" 
-						placeholder="G-XXXXXXXXXX or AW-XXXXXX"
-					/>
-				</td>
-				<td>
-					<button type="button" class="button remove-tag">Remove</button>
-				</td>
-			</tr>
+	// Add new tag row
+	addButton.addEventListener('click', function() {
+		const tbody = tagsTable.querySelector('tbody');
+		const newRow = document.createElement('tr');
+		newRow.className = 'tag-row';
+		
+		const rowCount = tbody.querySelectorAll('tr').length;
+		
+		newRow.innerHTML = `
+			<td>
+				<input type="text" 
+					name="sstg_tags[${rowCount}][id]" 
+					placeholder="G-XXXXXXXXXX, GTM-XXXXXX, or AW-XXXXXX"
+				/>
+			</td>
+			<td>
+				<button type="button" class="button remove-tag">Remove</button>
+			</td>
 		`;
-		document.querySelector('#sstg-tags-table tbody').insertAdjacentHTML('beforeend', newRow);
-		rowCount++;
+		
+		tbody.appendChild(newRow);
 	});
 
-	document.addEventListener('click', function(e) {
+	// Remove tag row
+	tagsTable.addEventListener('click', function(e) {
 		if (e.target.classList.contains('remove-tag')) {
-			const rows = document.querySelectorAll('.tag-row');
-			if (rows.length > 1) {
-				e.target.closest('tr').remove();
-			} else {
-				e.target.closest('tr').querySelector('input').value = '';
-			}
+			const row = e.target.closest('tr');
+			row.remove();
+			reindexRows();
 		}
 	});
+
+	// Reindex rows to keep array indexes sequential
+	function reindexRows() {
+		const rows = tagsTable.querySelectorAll('tbody tr');
+		rows.forEach((row, index) => {
+			const input = row.querySelector('input');
+			input.name = `sstg_tags[${index}][id]`;
+		});
+	}
 });

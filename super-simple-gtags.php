@@ -124,15 +124,42 @@ class SuperSimpleGTags {
 		?>
 		<div class="wrap">
 			<h1><?php _e('Super Simple GTags Settings', 'super-simple-gtags'); ?></h1>
+			<p class="description">The simplest way to add Google tags to your website. Just adding the base gtag script and configuration properties. No bloat.</p>
+			<p>
+				<strong><?php _e('Do you like this plugin?', 'super-simple-gtags'); ?></strong> 
+				<a href="https://buymeacoffee.com/emzimmer" target="_blank"><?php _e('Buy me a coffee!', 'super-simple-gtags'); ?></a> 
+				😊 
+				<?php _e('Or,', 'super-simple-gtags'); ?> 
+				<a href="https://paypal.me/emaxzimmer" target="_blank"><?php _e('Contribute by PayPal.', 'super-simple-gtags'); ?></a> 
+			</p>
 			<form method="post" action="options.php">
 				<?php
 				settings_fields('sstg_settings');
 				do_settings_sections('sstg_settings');
 				?>
-				<table class="form-table" id="sstg-tags-table">
+				<style>
+					#sstg-tags-table {
+						max-width: fit-content;
+					}
+
+					#sstg-tags-table input {
+						min-width: 350px;
+					}
+
+					.remove-tag {
+						color: #d63638 !important;
+						border-color: #d63638 !important;
+					}
+
+					#add-tag {
+						margin-top: 20px;
+						margin-bottom: 20px;
+					}
+				</style>
+
+				<table class="widefat" id="sstg-tags-table">
 					<thead>
 						<tr>
-							<th><?php _e('Tag Type', 'super-simple-gtags'); ?></th>
 							<th><?php _e('Measurement ID', 'super-simple-gtags'); ?></th>
 							<th><?php _e('Action', 'super-simple-gtags'); ?></th>
 						</tr>
@@ -141,16 +168,10 @@ class SuperSimpleGTags {
 						<?php foreach ($tags as $index => $tag) : ?>
 						<tr class="tag-row">
 							<td>
-								<select name="sstg_tags[<?php echo $index; ?>][type]">
-									<option value="ga4" <?php selected($tag['type'], 'ga4'); ?>>GA4</option>
-									<option value="ads" <?php selected($tag['type'], 'ads'); ?>>Google Ads</option>
-								</select>
-							</td>
-							<td>
 								<input type="text" 
 									name="sstg_tags[<?php echo $index; ?>][id]" 
 									value="<?php echo esc_attr($tag['id']); ?>"
-									placeholder="G-XXXXXXXXXX or AW-XXXXXX"
+									placeholder="G-XXXXXXXXXX, GTM-XXXXXX, or AW-XXXXXX"
 								/>
 							</td>
 							<td>
@@ -160,6 +181,7 @@ class SuperSimpleGTags {
 						<?php endforeach; ?>
 					</tbody>
 				</table>
+
 				<button type="button" class="button" id="add-tag"><?php _e('Add Another Tag', 'super-simple-gtags'); ?></button>
 				
 				<table class="form-table">
@@ -174,7 +196,7 @@ class SuperSimpleGTags {
 								/>
 								<?php _e('Enable debug mode', 'super-simple-gtags'); ?>
 							</label>
-							<p class="description"><?php _e('Enables debug mode for developers', 'super-simple-gtags'); ?></p>
+							<p class="description"><?php _e('Enables debug mode for developers and staging sites.', 'super-simple-gtags'); ?></p>
 						</td>
 					</tr>
 				</table>
@@ -232,7 +254,7 @@ class SuperSimpleGTags {
 			?>
 		</script>
 		<?php
-	}
+	}	
 }
 
 // Initialize the plugin singleton
